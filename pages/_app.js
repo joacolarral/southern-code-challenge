@@ -1,7 +1,16 @@
-import '../styles/globals.css'
+/* eslint-disable react/jsx-props-no-spreading */
+import { shape, node } from 'prop-types';
+import React from 'react';
+import '../styles/index.scss';
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+function MyApp(props) {
+  const { Component, pageProps } = props;
+  return <Component {...pageProps} />;
 }
 
-export default MyApp
+MyApp.propTypes = {
+  Component: node.isRequired,
+  pageProps: shape({}).isRequired,
+};
+
+export default MyApp;
