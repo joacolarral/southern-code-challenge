@@ -1,7 +1,12 @@
 .navbar-container {
-
+width: 100%;
+height: 6em;
+padding: 1em;
+border: 1px solid blue;
     .navbar-brand {
-
+        display: flex;
+        justify-content: center;
+        align-items: center;
         .nav-img {
             width: 90px;
         }
