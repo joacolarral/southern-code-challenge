@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import BannerHome from '../../assets/img/background-home.jpeg';
+import BannerHome from '../../../assets/img/background-home.jpeg';
 
 export default function Banner() {
   return (
