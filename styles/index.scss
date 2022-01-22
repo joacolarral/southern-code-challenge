@@ -1,5 +1,12 @@
 @import "./globals.scss";
+@import 'antd/dist/antd.css';
 
 // Components
 
 @import "../components/Navbar/Navbar.scss";
+@import "../components/Search/Search.scss";
+@import "../components/PhotoGrid/PhotoGrid.scss";
+
+// pages
+
+@import "../pages/home/Home.scss";

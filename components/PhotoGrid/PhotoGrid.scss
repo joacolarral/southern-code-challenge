@@ -1,0 +1,22 @@
+.photogrid-container {
+    padding: 0 10em;
+    margin: 3em 0;
+    display: flex;
+    flex-flow: row wrap;
+    gap: 2rem;
+    overflow-y: scroll;
+    .card-component {
+        width: 24em;
+    }
+    .card-flex {
+        flex-basis: 23%;
+    }
+    .rover-data {
+        .metadata{
+            margin: 1rem 0 ;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+}

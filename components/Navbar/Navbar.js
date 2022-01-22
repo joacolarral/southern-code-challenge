@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import nasaRickAndMorty from '../../assets/img/Nasa-Rick-And-Morty.png';
+import SearchInput from '../Search/Search';
 
 export default function Navbar() {
   return (
@@ -14,7 +15,7 @@ export default function Navbar() {
             // placeholder="blur" // Optional blur-up while loading
           />
         </div>
-        <div>Nasssa</div>
+        <SearchInput />
       </div>
     </div>
   );
