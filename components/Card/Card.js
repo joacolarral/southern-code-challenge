@@ -16,7 +16,7 @@ export default function CardComponent(props) {
         <div className="card-container">
           <div className="card-metadata">
             <div className="rover-data">
-              <h2>Rover: {roverData.name}</h2>
+              <h2>{roverData.name}</h2>
               <div className="metadata">
                 <div>
                   <strong>Landing date:</strong> {roverData.landing_date}

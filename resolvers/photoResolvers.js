@@ -5,9 +5,9 @@
 import axios from 'axios';
 import { notification } from 'antd';
 
-const getPhotos = (page = 1) => {
+const getPhotos = (rover, page = 1) => {
   return axios
-    .get(`/api/photomars?page=${page}`)
+    .get(`/api/photos-by-rover?page=${page}&rover=${rover}`)
     .then((res) => res.data)
     .catch(() => {
       return notification.error({
