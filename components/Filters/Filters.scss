@@ -1,0 +1,29 @@
+.filter-component {
+    padding: 2em;
+
+    .filter-container {
+        margin: 1em 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .filter-flex {
+            flex: 1 0 auto;
+        }
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+}
+.switch-sol {
+    display: flex;
+    align-items: center;
+    margin: 1.2em 0;
+}
+
+.select-load-filter {
+    cursor: pointer;
+}

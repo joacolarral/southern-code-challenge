@@ -6,6 +6,6 @@ module.exports = {
     includePaths: [path.join(__dirname, 'styles')],
   },
   images: {
-    domains: ['mars.jpl.nasa.gov'],
+    domains: ['mars.jpl.nasa.gov', 'mars.nasa.gov'],
   },
 };

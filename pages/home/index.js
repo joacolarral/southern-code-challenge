@@ -1,70 +1,21 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable comma-dangle */
 /* eslint-disable consistent-return */
-import Head from 'next/head';
-import { arrayOf, shape } from 'prop-types';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { Layout } from 'antd';
 import Banner from './components/Banner';
-import Navbar from '../../components/Navbar/Navbar';
-import PhotoGrid from '../../components/PhotoGrid/PhotoGrid';
-import useScrollLoading from '../../hooks/useScrollLoading';
-import { getPhotos } from '../../resolvers/photoResolvers';
+import FooterComponent from '../../components/Footer';
+import LayoutComponent from '../../components/Layout/Layout';
 
-export default function Home(props) {
-  const { photos } = props;
-  const [allPhotos, setPhotos] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [pageNumber, setPageNumber] = useState(1);
+const { Content } = Layout;
 
-  const getPhotoMars = () => {
-    setIsLoading(true);
-    getPhotos(pageNumber)
-      .then((data) => setPhotos((prevState) => [...prevState, ...data]))
-      .then(() => setIsLoading(false));
-  };
-
-  const lastElement = useScrollLoading(isLoading, setPageNumber, getPhotoMars);
-
-  useEffect(() => {
-    setPhotos(photos);
-    setIsLoading(false);
-  }, []);
-
+export default function Home() {
   return (
-    <div>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Navbar />
+    <LayoutComponent>
       <Banner />
-      <PhotoGrid
-        photosData={allPhotos}
-        loading={isLoading}
-        reachBottom={lastElement}
-      />
-    </div>
+      <Content style={{ padding: '0 50px' }}>
+        <div>Hello World</div>
+      </Content>
+      <FooterComponent />
+    </LayoutComponent>
   );
 }
-
-export async function getServerSideProps() {
-  const { API_KEY } = process.env;
-  const allPhotos = await axios.get(
-    `https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=0&page=${1}&api_key=${API_KEY}`
-  );
-
-  return {
-    props: {
-      photos: allPhotos.data.photos,
-    },
-  };
-}
-
-Home.propTypes = {
-  photos: arrayOf(shape({})),
-};
-
-Home.defaultProps = {
-  photos: [],
-};
