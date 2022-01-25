@@ -8,25 +8,27 @@ import { Content } from 'antd/lib/layout/layout';
 import moment from 'moment';
 import PhotoGrid from '../../components/PhotoGrid/PhotoGrid';
 import useScrollLoading from '../../hooks/useScrollLoading';
-import { getPhotos } from '../../resolvers/photoResolvers';
 import LayoutComponent from '../../components/Layout/Layout';
 import Filters from '../../components/Filters/Filters';
 import RoverService from '../../services/rovers';
+import { getRoversByFilters } from '../../resolvers/getRoversByFilters';
+import { getRoverFilters } from '../../resolvers/getRoverFilters';
 
 export default function Rover(props) {
   const { photos, filters, roverName } = props;
   const [allPhotos, setPhotos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(2);
   const [filterState, setFilterState] = useState({
+    cameraName: 'all',
     sol: 1,
-    cameraName: '',
     roverName,
     earthDate: moment(filters.max_date, 'YYYY/MM/DD'),
   });
-  const getPhotoMars = () => {
+  const [roversFilter, setRoversFilter] = useState(filters);
+  const getPhotoMars = async () => {
     setIsLoading(true);
-    getPhotos(filterState.roverName, pageNumber)
+    getRoversByFilters(filterState.roverName, { ...filterState, pageNumber })
       .then((data) => setPhotos((prevState) => [...prevState, ...data]))
       .then(() => setIsLoading(false));
   };
@@ -38,16 +40,48 @@ export default function Rover(props) {
     setIsLoading(false);
   }, []);
 
-  const handleFiltersChange = (values) => {
-    setFilterState({ ...values });
+  const handleFilterStateChange = (name, value) => {
+    setFilterState((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleRoverNameChange = (value) => {
+    handleFilterStateChange('roverName', value);
+    getRoverFilters(value).then((resfilters) => {
+      setRoversFilter(resfilters);
+      setFilterState((prevState) => ({
+        ...prevState,
+        earthDate: moment(resfilters.max_date),
+      }));
+    });
+  };
+
+  const changeAllFilterState = (newState) => {
+    setFilterState(newState);
+  };
+
+  const handleFiltersChange = (checked) => {
+    const filterQuery = {
+      ...filterState,
+      pageNumber,
+    };
+    if (checked) delete filterQuery.earthDate;
+    if (!checked) delete filterQuery.sol;
+
+    getRoversByFilters(filterState.roverName, filterQuery).then((data) => {
+      setPhotos(data);
+    });
   };
 
   return (
     <LayoutComponent>
       <Filters
-        filterData={filters}
+        filterData={roversFilter}
         filterState={filterState}
         filtersChange={handleFiltersChange}
+        loading={isLoading}
+        handleRoverNameChange={handleRoverNameChange}
+        handleFiltersChange={handleFilterStateChange}
+        changeAllFilterState={changeAllFilterState}
       />
       <Content>
         <div>
@@ -65,13 +99,14 @@ export default function Rover(props) {
 export async function getServerSideProps(context) {
   const { API_KEY } = process.env;
   const { params } = context;
+  const roverFilters = await RoverService.getRoversFilters(params.rover);
   const allPhotos = await axios.get(
     `https://api.nasa.gov/mars-photos/api/v1/rovers/${
       params.rover
-    }/photos?sol=1&page=${1}&api_key=${API_KEY}`
+    }/photos?page=${1}&earth_date=${moment(roverFilters.max_date).format(
+      'YYYY-MM-DD'
+    )}&api_key=${API_KEY}`
   );
-  const roverFilters = await RoverService.getRoversFilters(params.rover);
-
   return {
     props: {
       photos: allPhotos.data.photos,

@@ -1,36 +1,65 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable operator-linebreak */
+/* eslint-disable react/jsx-curly-newline */
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable camelcase */
 /* eslint-disable object-curly-newline */
-import React from 'react';
-import { Form, Row, Col, Button, Select, DatePicker, InputNumber } from 'antd';
+import React, { useState } from 'react';
+import {
+  Row,
+  Col,
+  Button,
+  Select,
+  DatePicker,
+  InputNumber,
+  Switch,
+} from 'antd';
 import { arrayOf, number, string, shape, instanceOf, func } from 'prop-types';
 import moment from 'moment';
+import ModalFilters from './ModalFilters';
 
 const { Option } = Select;
 
 export default function Filters(props) {
-  const { filterData, filterState, filtersChange } = props;
+  const {
+    filterData,
+    filterState,
+    filtersChange,
+    handleRoverNameChange,
+    handleFiltersChange,
+    changeAllFilterState,
+  } = props;
   const { max_sol, cameras, max_date, rovers } = filterData;
-  const [form] = Form.useForm();
-  const onFinish = (values) => {
-    filtersChange(values);
+  const [checked, setChecked] = useState(false);
+  const [modalState, setModalState] = useState({
+    visible: false,
+    modalType: 'loadFilterModal',
+  });
+  const applyChanges = () => {
+    filtersChange(checked);
+  };
+
+  const handleChange = (name, value) => {
+    handleFiltersChange(name, value);
+  };
+
+  const handleOpenModal = (modalType) => {
+    setModalState({
+      visible: true,
+      modalType,
+    });
   };
 
   return (
-    <Form
-      form={form}
-      name="advanced_search"
-      className="ant-advanced-search-form filter-component"
-      onFinish={onFinish}
-      initialValues={{
-        ...filterState,
-      }}
-    >
+    <div className="filter-component">
       <Row gutter={24} justify="center">
         <Col span={4}>
-          <Form.Item name="roverName" label="Rover">
+          <div className="filter-container">
+            <label>Rover: </label>
             <Select
               value={filterState.roverName}
-              defaultValue={filterState.roverName}
+              onChange={handleRoverNameChange}
+              className="filter-flex"
             >
               {rovers.map((rover) => (
                 <Option key={rover.name} value={rover.name}>
@@ -38,41 +67,97 @@ export default function Filters(props) {
                 </Option>
               ))}
             </Select>
-          </Form.Item>
+          </div>
         </Col>
-        <Col span={4}>
-          <Form.Item name="cameraName" label="Camera">
-            <Select placeholder="Select camera" value={filterState.cameraName}>
+        <Col span={5}>
+          <div className="filter-container">
+            <label>Camera: </label>
+            <Select
+              value={filterState.cameraName}
+              onChange={(value) => handleChange('cameraName', value)}
+              className="filter-flex"
+            >
+              <Option value="all">All Cameras</Option>
               {cameras.map((camera) => (
                 <Option key={camera.name} value={camera.name}>
                   {camera.full_name}
                 </Option>
               ))}
             </Select>
-          </Form.Item>
+          </div>
         </Col>
-        <Col span={4}>
-          <Form.Item name="earthDate" label="Earth Day">
-            <DatePicker
-              disabledDate={(current) => current && current > moment(max_date)}
-              defaultValue={filterState.earth_date}
+        <Col>
+          <div className="switch-sol">
+            <Switch
+              checked={checked}
+              checkedChildren="Sol"
+              unCheckedChildren="Date"
+              onChange={(checkedValue) => setChecked(checkedValue)}
             />
-          </Form.Item>
+          </div>
         </Col>
-        <Col span={4}>
-          <Form.Item name="sol" label="Sol">
-            <InputNumber min={1} max={max_sol} value={filterState.sol} />
-          </Form.Item>
+        {!checked ? (
+          <Col span={4}>
+            <div className="filter-container">
+              <label>Earth Date: </label>
+              <DatePicker
+                allowClear={false}
+                disabledDate={(current) =>
+                  current && current > moment(max_date)
+                }
+                onChange={(value) => handleChange('earthDate', value)}
+                value={filterState.earthDate}
+              />
+            </div>
+          </Col>
+        ) : (
+          <Col span={4}>
+            <div className="filter-container">
+              <label>Sol: </label>
+              <InputNumber
+                min={1}
+                max={max_sol}
+                value={filterState.sol}
+                onChange={(value) => handleChange('sol', value)}
+              />
+            </div>
+          </Col>
+        )}
+        <Col span={2}>
+          <div className="filter-container">
+            <Button type="primary" htmlType="submit" onClick={applyChanges}>
+              Apply filters
+            </Button>
+          </div>
         </Col>
       </Row>
       <Row>
         <Col span={24} style={{ textAlign: 'center' }}>
-          <Button type="primary" htmlType="submit">
-            Apply filters
-          </Button>
+          <div className="filter-buttons">
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={() => handleOpenModal('saveFilterModal')}
+            >
+              Save filters
+            </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={() => handleOpenModal('loadFilterModal')}
+            >
+              Load filters
+            </Button>
+          </div>
         </Col>
       </Row>
-    </Form>
+      <ModalFilters
+        changeAllFilters={changeAllFilterState}
+        modalState={modalState}
+        filterConfig={filterState}
+        setModalState={setModalState}
+      />
+    </div>
   );
 }
 
@@ -90,4 +175,7 @@ Filters.propTypes = {
     roverName: string,
     earthDate: instanceOf(Date),
   }).isRequired,
+  handleRoverNameChange: func.isRequired,
+  handleFiltersChange: func.isRequired,
+  changeAllFilterState: func.isRequired,
 };

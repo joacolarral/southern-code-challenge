@@ -12,16 +12,11 @@ class RoverService {
     );
   }
 
-  static async photosByRoverPage(rover, query) {
-    const { sol = 1, page = 1 } = query;
-
-    return axios.get(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=${sol}&page=${page}&api_key=${API_KEY}`
-    );
-  }
-
   static async photosByFilter(rover, query) {
     const queryFormatted = qs.stringify(query);
+    console.log(
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?${queryFormatted}&api_key=${API_KEY}`
+    );
     return axios.get(
       `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?${queryFormatted}&api_key=${API_KEY}`
     );

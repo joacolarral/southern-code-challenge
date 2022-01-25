@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable arrow-body-style */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable consistent-return */
@@ -5,10 +6,12 @@
 import axios from 'axios';
 import { notification } from 'antd';
 
-const getPhotos = (rover, page = 1) => {
+const getRoverFilters = (rover) => {
   return axios
-    .get(`/api/get-by-filters?page=${page}&rover=${rover}`)
-    .then((res) => res.data)
+    .get(`/api/rovers/filters?rover=${rover}`)
+    .then((res) => {
+      return res.data;
+    })
     .catch(() => {
       return notification.error({
         message: 'There was an error, please try again',
@@ -16,4 +19,4 @@ const getPhotos = (rover, page = 1) => {
     });
 };
 
-export { getPhotos };
+export { getRoverFilters };

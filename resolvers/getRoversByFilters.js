@@ -1,13 +1,22 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable arrow-body-style */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable consistent-return */
 /* eslint-disable comma-dangle */
 import axios from 'axios';
 import { notification } from 'antd';
+import qs from 'query-string';
 
-const getPhotos = (rover, page = 1) => {
+const getRoversByFilters = (rover, query) => {
+  const filtersQuery = {
+    ...query,
+  };
+  if (query.earthDate) {
+    filtersQuery.earthDate = query.earthDate.format('YYYY-MM-DD');
+  }
+  delete filtersQuery.roverName;
   return axios
-    .get(`/api/photos-by-rover?page=${page}&rover=${rover}`)
+    .get(`/api/rovers/${rover}?${qs.stringify(filtersQuery)}`)
     .then((res) => res.data)
     .catch(() => {
       return notification.error({
@@ -16,4 +25,4 @@ const getPhotos = (rover, page = 1) => {
     });
 };
 
-export { getPhotos };
+export { getRoversByFilters };
