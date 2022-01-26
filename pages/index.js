@@ -1,15 +1,16 @@
+/* eslint-disable object-curly-newline */
 /* eslint-disable no-use-before-define */
 /* eslint-disable comma-dangle */
 /* eslint-disable consistent-return */
 import { Layout, Card, Row, Col } from 'antd';
 import Image from 'next/image';
+import Link from 'next/link';
 import Banner from '../components/Banner/Banner';
 import FooterComponent from '../components/Footer';
 import LayoutComponent from '../components/Layout/Layout';
 import curiosityImg from '../assets/img/curiosity.jpeg';
 import opportunityImg from '../assets/img/opportunity.jpeg';
 import spiritImg from '../assets/img/spirit.jpeg';
-import Link from 'next/link';
 
 const { Content } = Layout;
 const { Meta } = Card;
