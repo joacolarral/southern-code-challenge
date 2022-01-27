@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable comma-dangle */
 /* eslint-disable no-undef */
 /* eslint-disable react/jsx-props-no-spreading */
@@ -13,6 +14,7 @@ export default function SaveComponent(props) {
   const [filterName, setFilterName] = useState('');
 
   const saveFilters = () => {
+    if (!filterName) return;
     const filtersStorage = localStorage.getItem('filters');
     const newFilterName = {
       id: uuidv4(),
