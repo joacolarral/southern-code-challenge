@@ -46,10 +46,6 @@ export default function Rover(props) {
       }
     );
   };
-  useEffect(() => {
-    console.log('[pageNumber]', pageNumber);
-    console.log('[hasMore]', hasMore);
-  }, [pageNumber]);
 
   const getPhotosByScrolling = () => {
     if (!hasMore) return;
