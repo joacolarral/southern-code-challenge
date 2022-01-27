@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { shape, node } from 'prop-types';
+import { func, shape } from 'prop-types';
 import React from 'react';
 import '../styles/index.scss';
 
@@ -9,7 +9,7 @@ function MyApp(props) {
 }
 
 MyApp.propTypes = {
-  Component: node.isRequired,
+  Component: func.isRequired,
   pageProps: shape({}).isRequired,
 };
 

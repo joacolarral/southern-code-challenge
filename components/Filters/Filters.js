@@ -14,7 +14,15 @@ import {
   InputNumber,
   Switch,
 } from 'antd';
-import { arrayOf, number, string, shape, instanceOf, func } from 'prop-types';
+import {
+  arrayOf,
+  number,
+  string,
+  shape,
+  instanceOf,
+  func,
+  bool,
+} from 'prop-types';
 import moment from 'moment';
 import ModalFilters from './ModalFilters';
 
@@ -30,13 +38,12 @@ export default function Filters(props) {
     changeAllFilterState,
   } = props;
   const { max_sol, cameras, max_date, rovers } = filterData;
-  const [checked, setChecked] = useState(false);
   const [modalState, setModalState] = useState({
     visible: false,
     modalType: 'loadFilterModal',
   });
   const applyChanges = () => {
-    filtersChange(checked);
+    filtersChange();
   };
 
   const handleChange = (name, value) => {
@@ -89,14 +96,14 @@ export default function Filters(props) {
         <Col>
           <div className="switch-sol">
             <Switch
-              checked={checked}
+              checked={filterState.checked}
               checkedChildren="Sol"
               unCheckedChildren="Date"
-              onChange={(checkedValue) => setChecked(checkedValue)}
+              onChange={(value) => handleChange('checked', value)}
             />
           </div>
         </Col>
-        {!checked ? (
+        {!filterState.checked ? (
           <Col span={4}>
             <div className="filter-container">
               <label>Earth Date: </label>
@@ -176,7 +183,8 @@ Filters.propTypes = {
     sol: number,
     cameraName: string,
     roverName: string,
-    earthDate: instanceOf(Date),
+    earthDate: instanceOf(moment),
+    checked: bool,
   }).isRequired,
   handleRoverNameChange: func.isRequired,
   handleFiltersChange: func.isRequired,

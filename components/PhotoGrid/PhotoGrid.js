@@ -6,7 +6,7 @@ import CardComponent from '../Card/Card';
 import CardLoader from '../Card/CardLoader';
 
 export default function PhotoGrid(props) {
-  const { photosData, loading, reachBottom } = props;
+  const { photosData, loading, reachBottom, hasMore } = props;
 
   return (
     <div className="photogrid-container">
@@ -23,7 +23,7 @@ export default function PhotoGrid(props) {
               }}
             />
           ))}
-          <div ref={reachBottom}>{loading && <CardLoader />}</div>
+          {hasMore && <div ref={reachBottom}>{loading && <CardLoader />}</div>}
         </>
       ) : (
         <div className="empty-state">
@@ -38,6 +38,7 @@ PhotoGrid.propTypes = {
   photosData: arrayOf(shape({})),
   loading: bool,
   reachBottom: func.isRequired,
+  hasMore: bool.isRequired,
 };
 
 PhotoGrid.defaultProps = {
