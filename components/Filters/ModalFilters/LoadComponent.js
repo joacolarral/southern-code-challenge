@@ -26,7 +26,7 @@ export default function LoadComponent(props) {
   };
 
   const handleLoad = () => {
-    if (!filterNameSelected) return handleCancel();
+    if (!filterNameSelected) return;
 
     const configExits = dataLoad.find((d) => d.id === filterNameSelected);
 

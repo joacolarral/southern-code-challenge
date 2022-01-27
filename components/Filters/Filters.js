@@ -101,12 +101,14 @@ export default function Filters(props) {
             <div className="filter-container">
               <label>Earth Date: </label>
               <DatePicker
+                data-testid="date-picker-filter"
                 allowClear={false}
                 disabledDate={(current) =>
                   current && current > moment(max_date)
                 }
                 onChange={(value) => handleChange('earthDate', value)}
                 value={filterState.earthDate}
+                format="YYYY-MM-DD"
               />
             </div>
           </Col>
@@ -115,6 +117,7 @@ export default function Filters(props) {
             <div className="filter-container">
               <label>Sol: </label>
               <InputNumber
+                data-testid="input-number"
                 min={1}
                 max={max_sol}
                 value={filterState.sol}
