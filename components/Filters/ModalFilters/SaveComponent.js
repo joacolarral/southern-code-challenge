@@ -65,5 +65,5 @@ export default function SaveComponent(props) {
 SaveComponent.propTypes = {
   handleModal: func.isRequired,
   visible: bool.isRequired,
-  filterConfig: shape.isRequired,
+  filterConfig: shape({}).isRequired,
 };

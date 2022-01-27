@@ -18,22 +18,51 @@ export default function Rover(props) {
   const { photos, filters, roverName } = props;
   const [allPhotos, setPhotos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const [pageNumber, setPageNumber] = useState(2);
   const [filterState, setFilterState] = useState({
     cameraName: 'all',
     sol: 1,
     roverName,
     earthDate: moment(filters.max_date, 'YYYY/MM/DD'),
+    checked: false,
   });
   const [roversFilter, setRoversFilter] = useState(filters);
-  const getPhotoMars = async () => {
+
+  const fetchPhotos = async (page) => {
+    const filterQuery = {
+      ...filterState,
+      pageNumber: page,
+    };
+    if (filterState.checked) delete filterQuery.earthDate;
+    if (!filterState.checked) delete filterQuery.sol;
+    delete filterQuery.checked;
+
+    return getRoversByFilters(filterState.roverName, filterQuery).then(
+      (data) => {
+        setHasMore(data.length === 25);
+        if (page === 1) return setPhotos(data);
+        return setPhotos((prevState) => [...prevState, ...data]);
+      }
+    );
+  };
+  useEffect(() => {
+    console.log('[pageNumber]', pageNumber);
+    console.log('[hasMore]', hasMore);
+  }, [pageNumber]);
+
+  const getPhotosByScrolling = () => {
+    if (!hasMore) return;
     setIsLoading(true);
-    getRoversByFilters(filterState.roverName, { ...filterState, pageNumber })
-      .then((data) => setPhotos((prevState) => [...prevState, ...data]))
-      .then(() => setIsLoading(false));
+    fetchPhotos(pageNumber).then(() => setIsLoading(false));
   };
 
-  const lastElement = useScrollLoading(isLoading, setPageNumber, getPhotoMars);
+  const lastElement = useScrollLoading(
+    isLoading,
+    setPageNumber,
+    getPhotosByScrolling,
+    [hasMore, filterState, isLoading, pageNumber]
+  );
 
   useEffect(() => {
     setPhotos(photos);
@@ -59,17 +88,9 @@ export default function Rover(props) {
     setFilterState(newState);
   };
 
-  const handleFiltersChange = (checked) => {
-    const filterQuery = {
-      ...filterState,
-      pageNumber,
-    };
-    if (checked) delete filterQuery.earthDate;
-    if (!checked) delete filterQuery.sol;
-
-    getRoversByFilters(filterState.roverName, filterQuery).then((data) => {
-      setPhotos(data);
-    });
+  const handleFiltersChange = () => {
+    setPageNumber(1);
+    fetchPhotos(1).then(() => setIsLoading(false));
   };
 
   return (
@@ -89,6 +110,7 @@ export default function Rover(props) {
             photosData={allPhotos}
             loading={isLoading}
             reachBottom={lastElement}
+            hasMore={hasMore}
           />
         </div>
       </Content>
@@ -118,11 +140,11 @@ export async function getServerSideProps(context) {
 
 Rover.propTypes = {
   photos: arrayOf(shape({})),
-  filters: arrayOf(shape({})),
+  filters: shape({}),
   roverName: string.isRequired,
 };
 
 Rover.defaultProps = {
   photos: [],
-  filters: [],
+  filters: {},
 };

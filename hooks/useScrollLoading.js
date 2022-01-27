@@ -3,7 +3,12 @@
 /* eslint-disable no-undef */
 import { useCallback, useRef } from 'react';
 
-export default function useScrollLoading(loading, setPageNumber, callback) {
+export default function useScrollLoading(
+  loading,
+  setPageNumber,
+  callback,
+  dependencies
+) {
   const observer = useRef();
   const lastMarsElementRef = useCallback(
     (node) => {
@@ -17,7 +22,7 @@ export default function useScrollLoading(loading, setPageNumber, callback) {
       });
       if (node) observer.current.observe(node);
     },
-    [loading]
+    [...dependencies]
   );
 
   return lastMarsElementRef;

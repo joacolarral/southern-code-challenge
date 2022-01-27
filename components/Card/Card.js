@@ -42,19 +42,19 @@ export default function CardComponent(props) {
 CardComponent.propTypes = {
   imgUrl: string.isRequired,
   metadata: shape({
-    cameraData: {
+    cameraData: shape({
       id: number.isRequired,
       name: string.isRequired,
       rover_id: number.isRequired,
       full_name: string.isRequired,
-    },
+    }).isRequired,
     earthDate: string.isRequired,
-    roverData: {
+    roverData: shape({
       id: number.isRequired,
       name: string.isRequired,
       landing_date: string.isRequired,
       launch_date: string.isRequired,
       status: string.isRequired,
-    },
+    }).isRequired,
   }).isRequired,
 };
